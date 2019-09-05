@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="phsw.css">
+    </head>
+    <body>
+        <div id="app">
+            <div v-for="(question, qIndex) in questions" data-test-id="question-container-0" class="question-container mb-3">
+                <article tabindex="0" data-is-editable="true" data-has-header-menu="true" :id="'question-' + qIndex" class="question question-default">
+                    <header class="question-header">
+                        <div>
+                            <div class="question-header-interaction">
+                                <button title="Click for a Hint" tabindex="-1" class="hint-button btn btn-secondary btn-small">
+                                    <span>hint</span>
+                                </button>
+                            </div>
+                            <div class="card-title">
+                                <h1 class="card-title-heading title-tertiary">{{question.title}}</h1>
+                            </div>
+                        </div>
+                    </header>
+                    <ol class="answers">
+                        <li v-for="r in Math.ceil(question.answers.length/2)" data-cols="2" class="grid--no-gutter">
+                            <div v-for="(answer, index) in question.answers.slice((r-1)*2,(r-1)*2+2)" data-test-id="answer-wrapper-0" class="answer-wrapper grid-item">
+                                <input type="radio" :id="'options-'+qIndex+'-'+(index+((r-1)*2))" :name="'options-'+qIndex" :value="index+((r-1)*2)" @click="question.selectedAnswer == -1 ? question.selectedAnswer = $event.target.value : null">
+                                <label :title="answer.title" :for="'options-'+qIndex+'-'+(index+((r-1)*2))" class="answer answer-default">
+                                    <span>{{answer.title}}</span>
+                                    <i v-if="answer.correct && question.selectedAnswer>-1" class="icon icon-checkmark correct"></i>
+                                    <i v-if="question.selectedAnswer == index+((r-1)*2) && !answer.correct" class="icon icon-xmark"></i>
+                                </label>
+                            </div>                            
+                        </li>
+                    </ol>
+                    <div v-if='question.selectedAnswer>-1' class="question-answer" :id="qIndex">
+                        <div class="container">
+                            <i v-if="question.answers[question.selectedAnswer].correct" class="icon icon-answer icon-checkmark"></i>
+                            <i v-else class="icon icon-answer icon-xmark"></i> 
+                            <p>
+                                <b>{{question.answers[question.selectedAnswer].correct? 'Correct' : 'Wrong'}} Answer!:</b> {{question.longAnswer}}
+                            </p>
+                        </div>
+                    </div>
+                </article>
+                <div data-ad="inline" class="ad inline-ad-placeholder">
+                    <img alt="sample ad" src="https://via.placeholder.com/728x90.png?text=Sample AD">
+                </div>
+            </div>
+            
+        </div>
+        <!-- development version, includes helpful console warnings -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    questions: [
+                        {
+                            title: 'When did December 25th become the official day of Christmas?',                        
+                            answers: [
+                                {
+                                    title: '1900',                                 
+                                },
+                                {
+                                    title: '1700'                                   
+                                },
+                                {
+                                    title: '350 A.D.',
+                                    correct: 1                              
+                                },
+                            ],
+                            longAnswer: ' It was a mere 350 years after the death of Jesus that the 25th was claimed as Christmas Day. It was Pope Julius who claimed that it should be celebrated in that day.'
+                        },
+                        {
+                            title: 'Christmas shopping makes up how much of U.S. retail sales?',                        
+                            answers: [
+                                {
+                                    title: '1/93',                                 
+                                },
+                                {
+                                    title: '1/6',
+                                    correct: 1                                
+                                },
+                                {
+                                    title: '98%',                 
+                                },
+                            ],
+                            longAnswer: "Christmas shopping actually makes up one-sixth of retail sales. That's a lot of presents!"
+                        }
+                    ]
+                },
+                mounted: function () {
+                    this.questions.forEach((element,index) => {
+                        this.$set(this.questions[index], 'selectedAnswer',-1);
+                    });
+                }
+            })
+        </script>
+    </body>
+</html>
